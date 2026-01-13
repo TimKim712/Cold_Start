@@ -1,15 +1,14 @@
 package com.TimKim712.CacheMeasuring.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 
 import com.TimKim712.CacheMeasuring.service.ProductService;
 import com.TimKim712.CacheMeasuring.model.Product;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import com.TimKim712.CacheMeasuring.repository.ProductRepository;
+import org.springframework.web.bind.annotation.*;
 
 
 
@@ -19,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class ProductController {
 
     private final ProductService service;
-
+    
+    @Autowired
+    private ProductRepository productRepository;
     public ProductController(ProductService service) {
         this.service = service;
     }
@@ -29,11 +30,15 @@ public class ProductController {
         return service.getProduct(id);
     }
 
-    @PostMapping("path")
-    public String postMethodName(@RequestBody String entity) {
-        //TODO: process POST request
-        
-        return entity;
+    @GetMapping
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
+    
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Product createProduct(@RequestBody Product product) {
+        return service.createProduct(product);
     }
     
     
